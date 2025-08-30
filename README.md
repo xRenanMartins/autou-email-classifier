@@ -112,14 +112,6 @@ docker-compose logs -f
 
 ### Email Produtivo
 ```
-Assunto: Problema com login
-Conteúdo: Olá, não consigo fazer login no sistema. 
-Erro: "Invalid credentials". Ticket #12345
-```
-
-**Classificação**: PRODUCTIVE (99%)
-**Resposta Sugerida**: 
-```
 Assunto: Acompanhamento da nossa conversa sobre o projeto X
 Corpo: Olá,
 Foi um prazer conversar consigo na nossa reunião de hoje. Conforme discutimos, anexo este email com os detalhes da proposta que apresentámos. 
@@ -127,6 +119,18 @@ Acredito que a nossa solução pode ser muito benéfica para a sua empresa, que 
 Tem interesse em discutir o próximo passo? Por favor, responda-me com a sua disponibilidade para uma breve chamada na próxima semana.
 
 Atenciosamente,
+```
+
+**Classificação**: PRODUCTIVE (99%)
+**Resposta Sugerida**: 
+```
+Assunto:
+Re: Assunto: Acompanhamento da nossa conversa sobre o projeto X Corpo: Olá, Foi um prazer conversar cons
+
+Corpo da Mensagem:
+Olá! Entendo sua solicitação sobre Assunto: Acompanhamento da nossa conversa sobre o projeto X
+Corpo: Olá,
+Foi um prazer conversar cons. Vou analisar e retornar em breve com uma solução. Se precisar de mais informações, estarei aqui para ajudar.
 ```
 
 ### Email Improdutivo
