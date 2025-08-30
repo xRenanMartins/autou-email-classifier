@@ -37,6 +37,7 @@ class Settings(BaseSettings):
         [
             "http://localhost:3000", 
             "http://localhost:8080",
+            "https://seu-app.vercel.app",  # Substitua pela sua URL real
             "https://*.vercel.app",
             "https://*.onrender.com"
         ],

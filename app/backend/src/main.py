@@ -89,10 +89,10 @@ app.add_middleware(
     allowed_hosts=settings.allowed_hosts
 )
 
-# Middleware CORS
+# Middleware CORS - SOLUÇÃO TEMPORÁRIA
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=["*"],  # Permite todas as origens temporariamente
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
