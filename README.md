@@ -120,8 +120,13 @@ Erro: "Invalid credentials". Ticket #12345
 **Classificação**: PRODUCTIVE (99%)
 **Resposta Sugerida**: 
 ```
-Olá! Entendo sua dificuldade com o login. 
-Vou verificar o ticket #12345 e resolver o problema de credenciais.
+Assunto: Acompanhamento da nossa conversa sobre o projeto X
+Corpo: Olá,
+Foi um prazer conversar consigo na nossa reunião de hoje. Conforme discutimos, anexo este email com os detalhes da proposta que apresentámos. 
+Acredito que a nossa solução pode ser muito benéfica para a sua empresa, que abordámos na nossa conversa. 
+Tem interesse em discutir o próximo passo? Por favor, responda-me com a sua disponibilidade para uma breve chamada na próxima semana.
+
+Atenciosamente,
 ```
 
 ### Email Improdutivo
