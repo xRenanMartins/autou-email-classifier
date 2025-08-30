@@ -29,6 +29,6 @@
     /* Test configuration */
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
-  "include": ["src", "src/**/*.ts", "src/**/*.tsx", "src/**/*.test.ts", "src/**/*.test.tsx"],
+  "include": ["src", "src/**/*.ts", "src/**/*.tsx", "src/**/*.test.ts", "src/**/*.test.tsx", "src/vite-env.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -11,7 +11,6 @@ import { ResultCard } from '../components/ResultCard'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { useEmailProcessing } from '../hooks/useEmailProcessing'
 import { useApiHealth } from '../hooks/useApiHealth'
-import { EmailProcessingRequest } from '../lib/api'
 
 const formSchema = z.object({
   text: z.string().min(10, 'O texto deve ter pelo menos 10 caracteres'),

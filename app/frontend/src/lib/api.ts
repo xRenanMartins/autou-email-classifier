@@ -2,6 +2,7 @@
  * Cliente API para comunicação com o backend FastAPI
  */
 
+// URL da API - será configurada pela Vercel
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export interface EmailProcessingRequest {

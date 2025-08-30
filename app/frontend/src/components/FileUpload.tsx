@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { Upload, FileText, X, AlertCircle } from 'lucide-react'
+import { Upload, X, AlertCircle } from 'lucide-react'
 import { FileUploadState } from '../types'
 
 interface FileUploadProps {

@@ -34,7 +34,12 @@ class Settings(BaseSettings):
         description="Hosts permitidos para TrustedHostMiddleware"
     )
     cors_origins: List[str] = Field(
-        ["http://localhost:3000", "http://localhost:8080"],
+        [
+            "http://localhost:3000", 
+            "http://localhost:8080",
+            "https://*.vercel.app",
+            "https://*.onrender.com"
+        ],
         description="Origens permitidas para CORS"
     )
     
