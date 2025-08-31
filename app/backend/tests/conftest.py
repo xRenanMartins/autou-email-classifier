@@ -19,11 +19,12 @@ def client():
 def mock_classifier():
     """Mock classifier for testing"""
     classifier = Mock(spec=ClassifierPort)
-    classifier.classify.return_value = {
+    # Configura o mock para retornar valores síncronos
+    classifier.classify = Mock(return_value={
         "label": "PRODUCTIVE",
         "confidence": 0.85,
         "reasoning": "Email contém solicitação específica"
-    }
+    })
     return classifier
 
 
@@ -31,12 +32,13 @@ def mock_classifier():
 def mock_responder():
     """Mock responder for testing"""
     responder = Mock(spec=ResponderPort)
-    responder.suggest_reply.return_value = {
+    # Configura o mock para retornar valores síncronos
+    responder.suggest_reply = Mock(return_value={
         "subject": "Re: Suporte Técnico",
         "body": "Obrigado pelo seu email. Vou analisar sua solicitação.",
         "tone": "professional",
         "language": "pt"
-    }
+    })
     return responder
 
 

@@ -48,13 +48,13 @@ class TestEmailClassificationController:
         """Test process email endpoint"""
         # Mock das dependências
         mock_deps = {
-            "security_service": AsyncMock(),
-            "email_parser": AsyncMock(),
-            "classifier": AsyncMock(),
-            "responder": AsyncMock(),
-            "email_repository": AsyncMock(),
-            "notification_service": AsyncMock(),
-            "cache_service": AsyncMock()
+            "security_service": Mock(),
+            "email_parser": Mock(),
+            "classifier": Mock(),
+            "responder": Mock(),
+            "email_repository": Mock(),
+            "notification_service": Mock(),
+            "cache_service": Mock()
         }
         mock_get_deps.return_value = mock_deps
         
@@ -66,21 +66,22 @@ class TestEmailClassificationController:
         mock_request.subject = "Test Subject"
         mock_request.metadata = {}
         
-        # Mock do rate limit
-        mock_deps["security_service"].check_rate_limit.return_value = True
+        # Mock dos métodos assíncronos
+        mock_deps["security_service"].check_rate_limit = AsyncMock(return_value=True)
+        mock_deps["notification_service"].log_processing_error = AsyncMock()
         
         # Mock do caso de uso
         with patch('src.adapters.http.controllers.ProcessEmailUseCase') as mock_use_case:
-            mock_use_case_instance = AsyncMock()
+            mock_use_case_instance = Mock()
             mock_use_case.return_value = mock_use_case_instance
-            mock_use_case_instance.execute.return_value = {
+            mock_use_case_instance.execute = AsyncMock(return_value={
                 "success": True,
                 "email_id": "test-123",
                 "classification": {"label": "PRODUCTIVE", "confidence": 0.9},
                 "suggested_response": {"subject": "Re: Test", "body": "Response"},
                 "processing_time_ms": 150.0,
                 "metadata": {}
-            }
+            })
             
             # Executa o método async usando asyncio.run
             result = asyncio.run(controller.process_email(mock_request, mock_deps))
@@ -95,19 +96,19 @@ class TestEmailClassificationController:
         """Test health check endpoint"""
         # Mock das dependências
         mock_deps = {
-            "classifier": AsyncMock(),
-            "responder": AsyncMock(),
-            "email_repository": AsyncMock(),
-            "notification_service": AsyncMock()
+            "classifier": Mock(),
+            "responder": Mock(),
+            "email_repository": Mock(),
+            "notification_service": Mock()
         }
         mock_get_deps.return_value = mock_deps
         
         controller = EmailClassificationController()
         
         # Mock dos componentes
-        mock_deps["classifier"].get_classification_metadata.return_value = {"version": "1.0"}
-        mock_deps["responder"].get_response_templates.return_value = []
-        mock_deps["email_repository"].get_processing_stats.return_value = {"total": 0}
+        mock_deps["classifier"].get_classification_metadata = AsyncMock(return_value={"version": "1.0"})
+        mock_deps["responder"].get_response_templates = AsyncMock(return_value=[])
+        mock_deps["email_repository"].get_processing_stats = AsyncMock(return_value={"total": 0})
         
         # Executa o método async usando asyncio.run
         result = asyncio.run(controller.health_check(mock_deps))

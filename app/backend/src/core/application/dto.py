@@ -6,7 +6,7 @@ e validação de entrada/saída.
 """
 from typing import Optional, List, Dict, Any
 from datetime import datetime
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from enum import Enum
 
 from ..domain.entities import EmailLabel
@@ -19,7 +19,8 @@ class EmailProcessingRequest(BaseModel):
     subject: Optional[str] = Field(None, description="Assunto do email")
     metadata: Optional[Dict[str, Any]] = Field(None, description="Metadados adicionais")
     
-    @validator('text')
+    @field_validator('text')
+    @classmethod
     def validate_text(cls, v):
         if v is not None and len(v.strip()) == 0:
             raise ValueError("Texto não pode estar vazio")
@@ -27,7 +28,8 @@ class EmailProcessingRequest(BaseModel):
             raise ValueError("Texto excede o limite de 100KB")
         return v
     
-    @validator('subject')
+    @field_validator('subject')
+    @classmethod
     def validate_subject(cls, v):
         if v is not None and len(v) > 255:
             raise ValueError("Assunto excede o limite de 255 caracteres")
@@ -145,7 +147,8 @@ class FileUploadRequest(BaseModel):
     content_type: str = Field(..., description="Tipo de conteúdo")
     subject: Optional[str] = Field(None, description="Assunto do email")
     
-    @validator('filename')
+    @field_validator('filename')
+    @classmethod
     def validate_filename(cls, v):
         if not v or len(v.strip()) == 0:
             raise ValueError("Nome do arquivo é obrigatório")
@@ -153,7 +156,8 @@ class FileUploadRequest(BaseModel):
             raise ValueError("Nome do arquivo muito longo")
         return v
     
-    @validator('file')
+    @field_validator('file')
+    @classmethod
     def validate_file_size(cls, v):
         if len(v) > 10 * 1024 * 1024:  # 10MB
             raise ValueError("Arquivo excede o limite de 10MB")
@@ -167,7 +171,8 @@ class BatchProcessingRequest(BaseModel):
     batch_size: Optional[int] = Field(10, description="Tamanho do lote")
     priority: Optional[str] = Field("normal", description="Prioridade do processamento")
     
-    @validator('emails')
+    @field_validator('emails')
+    @classmethod
     def validate_emails(cls, v):
         if not v or len(v) == 0:
             raise ValueError("Lista de emails não pode estar vazia")
@@ -175,7 +180,8 @@ class BatchProcessingRequest(BaseModel):
             raise ValueError("Máximo de 100 emails por lote")
         return v
     
-    @validator('batch_size')
+    @field_validator('batch_size')
+    @classmethod
     def validate_batch_size(cls, v):
         if v is not None and (v < 1 or v > 50):
             raise ValueError("Tamanho do lote deve estar entre 1 e 50")
@@ -204,13 +210,15 @@ class SearchRequest(BaseModel):
     limit: Optional[int] = Field(100, description="Limite de resultados")
     offset: Optional[int] = Field(0, description="Offset para paginação")
     
-    @validator('limit')
+    @field_validator('limit')
+    @classmethod
     def validate_limit(cls, v):
         if v is not None and (v < 1 or v > 1000):
             raise ValueError("Limite deve estar entre 1 e 1000")
         return v
     
-    @validator('offset')
+    @field_validator('offset')
+    @classmethod
     def validate_offset(cls, v):
         if v is not None and v < 0:
             raise ValueError("Offset deve ser maior ou igual a 0")

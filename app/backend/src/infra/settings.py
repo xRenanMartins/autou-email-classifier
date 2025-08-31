@@ -7,7 +7,7 @@ permitindo fácil customização via variáveis de ambiente.
 import os
 from typing import Optional, List
 from pydantic_settings import BaseSettings
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 
 class Settings(BaseSettings):
@@ -90,13 +90,14 @@ class Settings(BaseSettings):
     enable_trusted_hosts: bool = Field(True, description="Se TrustedHostMiddleware está habilitado")
     enable_cors: bool = Field(True, description="Se CORS está habilitado")
     
-    class Config:
-        """Configuração do Pydantic."""
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
+    model_config = {
+        "env_file": ".env",
+        "env_file_encoding": "utf-8",
+        "case_sensitive": False
+    }
     
-    @validator("environment")
+    @field_validator("environment")
+    @classmethod
     def validate_environment(cls, v):
         """Valida ambiente."""
         allowed = ["development", "staging", "production", "test"]
@@ -104,7 +105,8 @@ class Settings(BaseSettings):
             raise ValueError(f"Ambiente deve ser um de: {allowed}")
         return v
     
-    @validator("log_level")
+    @field_validator("log_level")
+    @classmethod
     def validate_log_level(cls, v):
         """Valida nível de logging."""
         allowed = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
@@ -112,14 +114,16 @@ class Settings(BaseSettings):
             raise ValueError(f"Nível de logging deve ser um de: {allowed}")
         return v.upper()
     
-    @validator("port")
+    @field_validator("port")
+    @classmethod
     def validate_port(cls, v):
         """Valida porta."""
         if not 1 <= v <= 65535:
             raise ValueError("Porta deve estar entre 1 e 65535")
         return v
     
-    @validator("max_file_size_mb")
+    @field_validator("max_file_size_mb")
+    @classmethod
     def validate_max_file_size(cls, v):
         """Valida tamanho máximo de arquivo."""
         if v <= 0:
@@ -128,7 +132,8 @@ class Settings(BaseSettings):
             raise ValueError("Tamanho máximo de arquivo não pode exceder 100MB")
         return v
     
-    @validator("max_text_length_kb")
+    @field_validator("max_text_length_kb")
+    @classmethod
     def validate_max_text_length(cls, v):
         """Valida tamanho máximo de texto."""
         if v <= 0:
