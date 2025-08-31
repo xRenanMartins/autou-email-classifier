@@ -62,7 +62,7 @@ class StructuredLoggingService(NotificationPort):
             label=classification.label,
             confidence=classification.confidence,
             reasoning=classification.reasoning,
-            processed_at=classification.processing_time_ms
+            processing_time_ms=classification.processing_time_ms
         )
         
         # Incrementa métricas

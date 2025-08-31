@@ -92,6 +92,10 @@ class Email:
         self._suggested_response: Optional[SuggestedResponse] = None
         self._processing_status = "PENDING"
         
+        # Timestamps
+        self._created_at = datetime.utcnow()
+        self._updated_at = datetime.utcnow()
+        
     @property
     def is_processed(self) -> bool:
         """Verifica se o email foi completamente processado."""
@@ -114,16 +118,19 @@ class Email:
         """Define o email pré-processado."""
         self._preprocessed = preprocessed
         self._processing_status = "PREPROCESSED"
+        self._updated_at = datetime.utcnow()
     
     def set_classification(self, classification: Classification) -> None:
         """Define a classificação do email."""
         self._classification = classification
         self._processing_status = "CLASSIFIED"
+        self._updated_at = datetime.utcnow()
     
     def set_suggested_response(self, response: SuggestedResponse) -> None:
         """Define a resposta sugerida."""
         self._suggested_response = response
         self._processing_status = "COMPLETED"
+        self._updated_at = datetime.utcnow()
     
     def get_processing_summary(self) -> dict:
         """Retorna um resumo do processamento."""

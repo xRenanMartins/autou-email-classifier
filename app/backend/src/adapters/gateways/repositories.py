@@ -34,9 +34,7 @@ class InMemoryEmailRepository(EmailRepositoryPort):
         email_id_str = str(email.email_id)
         
         # Adiciona timestamp de criação/modificação
-        if not hasattr(email, '_created_at'):
-            email._created_at = datetime.utcnow()
-        email._updated_at = datetime.utcnow()
+
         
         # Armazena no dicionário
         self._emails[email_id_str] = email
@@ -57,8 +55,7 @@ class InMemoryEmailRepository(EmailRepositoryPort):
         filtered_emails = []
         
         for email in self._emails.values():
-            if (hasattr(email, '_classification') and 
-                email._classification and 
+            if (email._classification and 
                 email._classification.label == label):
                 filtered_emails.append(email)
                 
@@ -80,7 +77,7 @@ class InMemoryEmailRepository(EmailRepositoryPort):
         last_processed = None
         
         for email in self._emails.values():
-            if hasattr(email, '_classification') and email._classification:
+            if email._classification:
                 if email._classification.label == EmailLabel.PRODUCTIVE:
                     productive_count += 1
                 else:
@@ -88,12 +85,11 @@ class InMemoryEmailRepository(EmailRepositoryPort):
                 
                 total_confidence += email._classification.confidence
                 
-                if hasattr(email._classification, 'processing_time_ms'):
+                if hasattr(email._classification, 'processing_time_ms') and email._classification.processing_time_ms is not None:
                     total_processing_time += email._classification.processing_time_ms
                 
-                if hasattr(email, '_updated_at'):
-                    if last_processed is None or email._updated_at > last_processed:
-                        last_processed = email._updated_at
+                if last_processed is None or email._updated_at > last_processed:
+                    last_processed = email._updated_at
         
         # Calcula médias
         avg_confidence = total_confidence / total_emails if total_emails > 0 else 0.0
@@ -130,15 +126,14 @@ class InMemoryEmailRepository(EmailRepositoryPort):
         
         for email in self._emails.values():
             # Filtra por label
-            if label and (not hasattr(email, '_classification') or 
-                         not email._classification or 
+            if label and (not email._classification or 
                          email._classification.label != label):
                 continue
             
             # Filtra por data
-            if date_from and hasattr(email, '_created_at') and email._created_at < date_from:
+            if date_from and email._created_at < date_from:
                 continue
-            if date_to and hasattr(email, '_created_at') and email._created_at > date_to:
+            if date_to and email._created_at > date_to:
                 continue
             
             # Filtra por query de texto

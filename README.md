@@ -125,11 +125,9 @@ Atenciosamente,
 **Resposta Sugerida**: 
 ```
 Assunto:
-Re: Assunto: Acompanhamento da nossa conversa sobre o projeto X Corpo: Olá, Foi um prazer conversar cons
+Re: Assunto: Acompanhamento da nossa conversa sobre o projeto X
 
-Corpo da Mensagem:
-Olá! Entendo sua solicitação sobre Assunto: Acompanhamento da nossa conversa sobre o projeto X
-Corpo: Olá,
+Conteúdo:
 Foi um prazer conversar cons. Vou analisar e retornar em breve com uma solução. Se precisar de mais informações, estarei aqui para ajudar.
 ```
 
