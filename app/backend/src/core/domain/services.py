@@ -29,7 +29,7 @@ class EmailClassificationService:
     é produtivo ou improdutivo baseado em heurísticas.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._rules = self._initialize_rules()
 
     def _initialize_rules(self) -> List[ClassificationRule]:
@@ -257,7 +257,7 @@ class EmailPreprocessingService:
     Implementa regras de limpeza e normalização do texto.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._stop_words = self._load_stop_words()
         self._signature_patterns = self._load_signature_patterns()
 

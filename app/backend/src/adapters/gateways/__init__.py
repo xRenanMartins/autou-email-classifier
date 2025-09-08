@@ -1,3 +1,5 @@
+"""Gateways de integração."""
+
 """
 Gateways - Implementações das portas (interfaces).
 

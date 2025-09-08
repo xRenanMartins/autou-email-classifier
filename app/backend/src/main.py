@@ -11,6 +11,7 @@ Configura a aplicação com:
 
 import time
 from contextlib import asynccontextmanager
+from typing import AsyncGenerator, Any
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -31,7 +32,7 @@ setup_logging()
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """
     Gerencia o ciclo de vida da aplicação.
 
@@ -99,7 +100,7 @@ app.add_middleware(
 
 # Middleware de logging e métricas
 @app.middleware("http")
-async def log_requests(request: Request, call_next):
+async def log_requests(request: Request, call_next: Any) -> Any:
     """Middleware para logging de requests e métricas."""
     start_time = time.time()
 
@@ -149,7 +150,7 @@ async def log_requests(request: Request, call_next):
 
 # Middleware de tratamento de erros
 @app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
+async def global_exception_handler(request: Request, exc: Exception) -> Any:
     """Handler global para exceções não tratadas."""
     logger = structlog.get_logger()
 
@@ -180,7 +181,7 @@ app.include_router(api_router)
 
 # Rota raiz
 @app.get("/", tags=["root"])
-async def root():
+async def root() -> Any:
     """Rota raiz da API."""
     return {
         "message": "Email Classifier API",
@@ -194,7 +195,7 @@ async def root():
 
 # Rota de métricas Prometheus
 @app.get("/metrics", tags=["monitoring"])
-async def metrics():
+async def metrics() -> Any:
     """Endpoint para métricas Prometheus."""
     try:
         from .adapters.gateways.services import PrometheusMetricsService
@@ -216,7 +217,7 @@ async def metrics():
 
 # Rota de status detalhado
 @app.get("/status", tags=["monitoring"])
-async def detailed_status():
+async def detailed_status() -> Any:
     """Status detalhado da aplicação."""
     try:
         from .adapters.dependencies import get_dependency_container
@@ -241,12 +242,11 @@ async def detailed_status():
             components_status["classifier"] = {"status": "unhealthy", "error": str(e)}
 
         try:
-            templates = await responder.get_response_templates(
-                container.get_classifier().get_supported_labels()[0]
-            )
+            from ..core.domain.entities import EmailLabel
+            templates = await responder.get_response_templates(EmailLabel.PRODUCTIVE)
             components_status["responder"] = {
                 "status": "healthy",
-                "templates_count": len(templates),
+                "templates_count": str(len(list(templates))),
             }
         except Exception as e:
             components_status["responder"] = {"status": "unhealthy", "error": str(e)}
@@ -282,7 +282,7 @@ async def detailed_status():
 
 # Rota de health check simples
 @app.get("/health", tags=["monitoring"])
-async def health_check():
+async def health_check() -> Any:
     """Health check simples da aplicação."""
     return {
         "status": "healthy",

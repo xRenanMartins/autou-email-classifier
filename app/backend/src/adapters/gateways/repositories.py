@@ -22,7 +22,7 @@ class InMemoryEmailRepository(EmailRepositoryPort):
     e testes. Dados são perdidos ao reiniciar a aplicação.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._emails: Dict[str, Email] = {}
         self._counter = 0
 
@@ -180,11 +180,11 @@ class InMemoryTemplateRepository(TemplateRepositoryPort):
     e testes. Dados são perdidos ao reiniciar a aplicação.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._templates: Dict[str, ResponseTemplate] = {}
         self._initialize_default_templates()
 
-    def _initialize_default_templates(self):
+    def _initialize_default_templates(self) -> None:
         """Inicializa templates padrão."""
         from ...core.domain.entities import EmailLabel
 
@@ -316,17 +316,17 @@ class InMemoryTemplateRepository(TemplateRepositoryPort):
         active_templates = len([t for t in self._templates.values() if t.is_active])
 
         # Conta por label
-        label_counts = defaultdict(int)
+        label_counts: Dict[str, int] = defaultdict(int)
         for template in self._templates.values():
             label_counts[template.label_target.value] += 1
 
         # Conta por idioma
-        language_counts = defaultdict(int)
+        language_counts: Dict[str, int] = defaultdict(int)
         for template in self._templates.values():
             language_counts[template.language] += 1
 
         # Conta por tom
-        tone_counts = defaultdict(int)
+        tone_counts: Dict[str, int] = defaultdict(int)
         for template in self._templates.values():
             tone_counts[template.tone] += 1
 

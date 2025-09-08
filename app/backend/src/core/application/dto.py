@@ -19,7 +19,7 @@ class EmailProcessingRequest(BaseModel):
 
     @field_validator("text")
     @classmethod
-    def validate_text(cls, v):
+    def validate_text(cls, v: Optional[str]) -> Optional[str]:
         if v is not None and len(v.strip()) == 0:
             raise ValueError("Texto não pode estar vazio")
         if v is not None and len(v) > 100000:
@@ -28,7 +28,7 @@ class EmailProcessingRequest(BaseModel):
 
     @field_validator("subject")
     @classmethod
-    def validate_subject(cls, v):
+    def validate_subject(cls, v: Optional[str]) -> Optional[str]:
         if v is not None and len(v) > 255:
             raise ValueError("Assunto excede o limite de 255 caracteres")
         return v
@@ -161,7 +161,7 @@ class FileUploadRequest(BaseModel):
 
     @field_validator("filename")
     @classmethod
-    def validate_filename(cls, v):
+    def validate_filename(cls, v: str) -> str:
         if not v or len(v.strip()) == 0:
             raise ValueError("Nome do arquivo é obrigatório")
         if len(v) > 255:
@@ -170,7 +170,7 @@ class FileUploadRequest(BaseModel):
 
     @field_validator("file")
     @classmethod
-    def validate_file_size(cls, v):
+    def validate_file_size(cls, v: bytes) -> bytes:
         if len(v) > 10 * 1024 * 1024:  # 10MB
             raise ValueError("Arquivo excede o limite de 10MB")
         return v
@@ -187,7 +187,7 @@ class BatchProcessingRequest(BaseModel):
 
     @field_validator("emails")
     @classmethod
-    def validate_emails(cls, v):
+    def validate_emails(cls, v: List[str]) -> List[str]:
         if not v or len(v) == 0:
             raise ValueError("Lista de emails não pode estar vazia")
         if len(v) > 100:
@@ -196,7 +196,7 @@ class BatchProcessingRequest(BaseModel):
 
     @field_validator("batch_size")
     @classmethod
-    def validate_batch_size(cls, v):
+    def validate_batch_size(cls, v: Optional[int]) -> Optional[int]:
         if v is not None and (v < 1 or v > 50):
             raise ValueError("Tamanho do lote deve estar entre 1 e 50")
         return v
@@ -228,14 +228,14 @@ class SearchRequest(BaseModel):
 
     @field_validator("limit")
     @classmethod
-    def validate_limit(cls, v):
+    def validate_limit(cls, v: Optional[int]) -> Optional[int]:
         if v is not None and (v < 1 or v > 1000):
             raise ValueError("Limite deve estar entre 1 e 1000")
         return v
 
     @field_validator("offset")
     @classmethod
-    def validate_offset(cls, v):
+    def validate_offset(cls, v: Optional[int]) -> Optional[int]:
         if v is not None and v < 0:
             raise ValueError("Offset deve ser maior ou igual a 0")
         return v

@@ -5,7 +5,7 @@ Orquestra as operações de negócio usando as portas definidas,
 sem depender de implementações específicas.
 """
 
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Union, cast
 from datetime import datetime
 import time
 
@@ -63,10 +63,11 @@ class ClassifyEmailAndSuggestResponse:
         email.set_preprocessed(preprocessed)
 
         # Classificação usando o mock (síncrono para testes)
+        classification_result: Dict[str, Any]
         try:
-            classification_result = self.classifier.classify(preprocessed, {})
+            result = self.classifier.classify(preprocessed, {})
             # Se for coroutine, usa valores padrão
-            if hasattr(classification_result, "__await__"):
+            if hasattr(result, "__await__"):
                 classification_result = {
                     "label": (
                         "PRODUCTIVE" if "urgente" in text.lower() else "UNPRODUCTIVE"
@@ -74,9 +75,19 @@ class ClassifyEmailAndSuggestResponse:
                     "confidence": 0.85,
                     "reasoning": "Classificação via mock",
                 }
+            else:
+                classification_result = cast(Dict[str, Any], result)
         except Exception as e:
             # Propaga a exceção para os testes de falha
             raise e
+        
+        # Garante que classification_result é um dict
+        if not isinstance(classification_result, dict):
+            classification_result = {
+                "label": "UNPRODUCTIVE",
+                "confidence": 0.5,
+                "reasoning": "Classificação padrão",
+            }
 
         email.set_classification(
             Classification(
@@ -93,21 +104,36 @@ class ClassifyEmailAndSuggestResponse:
         )
 
         # Resposta sugerida usando o mock (síncrono para testes)
+        response_result: Dict[str, str]
         try:
-            response_result = self.responder.suggest_reply(
-                email, email._classification, {}
+            classification = email._classification
+            if not classification:
+                raise ValueError("Email não foi classificado")
+            response_result_raw: Any = self.responder.suggest_reply(
+                email, classification, {}
             )
             # Se for coroutine, usa valores padrão
-            if hasattr(response_result, "__await__"):
+            if hasattr(response_result_raw, "__await__"):
                 response_result = {
                     "subject": f"Re: {request.get('subject', 'Email')}",
                     "body": "Obrigado pelo seu email. Vou analisar sua solicitação.",
                     "tone": "professional",
                     "language": "pt",
                 }
+            else:
+                response_result = cast(Dict[str, str], response_result_raw)
         except Exception as e:
             # Propaga a exceção para os testes de falha
             raise e
+        
+        # Garante que response_result é um dict
+        if not isinstance(response_result, dict):
+            response_result = {
+                "subject": f"Re: {request.get('subject', 'Email')}",
+                "body": "Obrigado pelo seu email. Vou analisar sua solicitação.",
+                "tone": "professional",
+                "language": "pt",
+            }
 
         email.set_suggested_response(
             SuggestedResponse(
@@ -125,15 +151,15 @@ class ClassifyEmailAndSuggestResponse:
         return {
             "email_id": str(email.email_id),
             "classification": {
-                "label": email._classification.label.value,
-                "confidence": email._classification.confidence,
-                "reasoning": email._classification.reasoning,
+                "label": email._classification.label.value if email._classification else "UNKNOWN",
+                "confidence": email._classification.confidence if email._classification else 0.0,
+                "reasoning": email._classification.reasoning if email._classification else "No classification",
             },
             "suggested_response": {
-                "subject": email._suggested_response.subject,
-                "body": email._suggested_response.body,
-                "tone": email._suggested_response.tone,
-                "language": email._suggested_response.language,
+                "subject": email._suggested_response.subject if email._suggested_response else "No response",
+                "body": email._suggested_response.body if email._suggested_response else "No response",
+                "tone": email._suggested_response.tone if email._suggested_response else "neutral",
+                "language": email._suggested_response.language if email._suggested_response else "pt",
             },
             "processing_time_ms": 150.0,
             "metadata": {
@@ -314,7 +340,7 @@ class ProcessEmailUseCase:
         if text:
             return await self.email_parser.parse_text(text, subject)
         elif file_content:
-            return await self.email_parser.parse_file(file_content, filename)
+            return await self.email_parser.parse_file(file_content, filename or "unknown.txt")
         else:
             raise ValueError("Nenhuma entrada válida fornecida")
 
@@ -484,7 +510,7 @@ class HealthCheckUseCase:
 
     async def execute(self) -> Dict[str, Any]:
         """Executa verificação de saúde dos componentes."""
-        health_status = {
+        health_status: Dict[str, Any] = {
             "status": "healthy",
             "timestamp": datetime.utcnow().isoformat(),
             "components": {},
@@ -511,7 +537,7 @@ class HealthCheckUseCase:
             )
             health_status["components"]["responder"] = {
                 "status": "healthy",
-                "templates_count": len(templates),
+                "templates_count": len(list(templates)),
             }
         except Exception as e:
             health_status["components"]["responder"] = {

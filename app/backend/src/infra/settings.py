@@ -94,7 +94,7 @@ class Settings(BaseSettings):
 
     @field_validator("environment")
     @classmethod
-    def validate_environment(cls, v):
+    def validate_environment(cls, v: str) -> str:
         """Valida ambiente."""
         allowed = ["development", "staging", "production", "test"]
         if v not in allowed:
@@ -103,7 +103,7 @@ class Settings(BaseSettings):
 
     @field_validator("log_level")
     @classmethod
-    def validate_log_level(cls, v):
+    def validate_log_level(cls, v: str) -> str:
         """Valida nível de logging."""
         allowed = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
         if v.upper() not in allowed:
@@ -112,7 +112,7 @@ class Settings(BaseSettings):
 
     @field_validator("port")
     @classmethod
-    def validate_port(cls, v):
+    def validate_port(cls, v: int) -> int:
         """Valida porta."""
         if not 1 <= v <= 65535:
             raise ValueError("Porta deve estar entre 1 e 65535")
@@ -120,7 +120,7 @@ class Settings(BaseSettings):
 
     @field_validator("max_file_size_mb")
     @classmethod
-    def validate_max_file_size(cls, v):
+    def validate_max_file_size(cls, v: int) -> int:
         """Valida tamanho máximo de arquivo."""
         if v <= 0:
             raise ValueError("Tamanho máximo de arquivo deve ser positivo")
@@ -130,7 +130,7 @@ class Settings(BaseSettings):
 
     @field_validator("max_text_length_kb")
     @classmethod
-    def validate_max_text_length(cls, v):
+    def validate_max_text_length(cls, v: int) -> int:
         """Valida tamanho máximo de texto."""
         if v <= 0:
             raise ValueError("Tamanho máximo de texto deve ser positivo")

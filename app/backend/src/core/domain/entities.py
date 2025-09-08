@@ -3,7 +3,7 @@ Entidades do domínio para o sistema de classificação de emails.
 """
 
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Any
 from dataclasses import dataclass
 from enum import Enum
 from uuid import UUID, uuid4
@@ -199,7 +199,7 @@ class ResponseTemplate:
         self.created_at = datetime.utcnow()
         self.updated_at = datetime.utcnow()
 
-    def render(self, **kwargs) -> str:
+    def render(self, **kwargs: Any) -> str:
         """Renderiza o template com as variáveis fornecidas."""
         try:
             return self.template_text.format(**kwargs)

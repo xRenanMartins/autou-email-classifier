@@ -41,8 +41,8 @@ class DependencyContainer:
     da aplicação, permitindo fácil troca de implementações.
     """
 
-    def __init__(self):
-        self._instances = {}
+    def __init__(self) -> None:
+        self._instances: Dict[str, Any] = {}
         self._settings = get_settings()
 
     def get_email_parser(self) -> EmailParserPort:
@@ -59,7 +59,7 @@ class DependencyContainer:
                 text_parser, file_parser
             )
 
-        return self._instances["email_parser"]
+        return self._instances["email_parser"]  # type: ignore
 
     def get_classifier(self) -> ClassifierPort:
         """Retorna implementação do classificador."""
@@ -68,7 +68,7 @@ class DependencyContainer:
             # Pode ser trocado por OpenAI, Hugging Face, etc.
             self._instances["classifier"] = HeuristicClassifier()
 
-        return self._instances["classifier"]
+        return self._instances["classifier"]  # type: ignore
 
     def get_responder(self) -> ResponderPort:
         """Retorna implementação do gerador de respostas."""
@@ -77,7 +77,7 @@ class DependencyContainer:
             # Pode ser trocado por OpenAI, Hugging Face, etc.
             self._instances["responder"] = TemplateResponder()
 
-        return self._instances["responder"]
+        return self._instances["responder"]  # type: ignore
 
     def get_email_repository(self) -> EmailRepositoryPort:
         """Retorna implementação do repositório de emails."""
@@ -92,7 +92,7 @@ class DependencyContainer:
                 # Usa memória para desenvolvimento
                 self._instances["email_repository"] = InMemoryEmailRepository()
 
-        return self._instances["email_repository"]
+        return self._instances["email_repository"]  # type: ignore
 
     def get_template_repository(self) -> Any:
         """Retorna implementação do repositório de templates."""
@@ -112,21 +112,21 @@ class DependencyContainer:
         if "notification_service" not in self._instances:
             self._instances["notification_service"] = StructuredLoggingService()
 
-        return self._instances["notification_service"]
+        return self._instances["notification_service"]  # type: ignore
 
     def get_security_service(self) -> SecurityPort:
         """Retorna implementação do serviço de segurança."""
         if "security_service" not in self._instances:
             self._instances["security_service"] = BasicSecurityService()
 
-        return self._instances["security_service"]
+        return self._instances["security_service"]  # type: ignore
 
     def get_cache_service(self) -> CachePort:
         """Retorna implementação do serviço de cache."""
         if "cache_service" not in self._instances:
             self._instances["cache_service"] = InMemoryCacheService()
 
-        return self._instances["cache_service"]
+        return self._instances["cache_service"]  # type: ignore
 
     def get_all_dependencies(self) -> Dict[str, Any]:
         """Retorna todas as dependências como dicionário."""
@@ -141,7 +141,7 @@ class DependencyContainer:
             "cache_service": self.get_cache_service(),
         }
 
-    def reset(self):
+    def reset(self) -> None:
         """Reseta todas as instâncias (útil para testes)."""
         self._instances.clear()
 
@@ -161,7 +161,7 @@ def get_dependencies() -> Dict[str, Any]:
     return get_dependency_container().get_all_dependencies()
 
 
-def override_dependency(dependency_name: str, implementation: Any):
+def override_dependency(dependency_name: str, implementation: Any) -> None:
     """
     Sobrescreve uma dependência (útil para testes).
 
@@ -173,7 +173,7 @@ def override_dependency(dependency_name: str, implementation: Any):
     container._instances[dependency_name] = implementation
 
 
-def reset_dependencies():
+def reset_dependencies() -> None:
     """Reseta todas as dependências (útil para testes)."""
     get_dependency_container().reset()
 
@@ -215,7 +215,7 @@ def create_prometheus_metrics() -> NotificationPort:
 
 
 # Configuração de dependências baseada em ambiente
-def configure_dependencies_for_environment(environment: str):
+def configure_dependencies_for_environment(environment: str) -> None:
     """
     Configura dependências para um ambiente específico.
 
@@ -254,7 +254,7 @@ def configure_dependencies_for_environment(environment: str):
 
 
 # Inicialização automática baseada em configuração
-def initialize_dependencies():
+def initialize_dependencies() -> None:
     """Inicializa dependências baseado na configuração atual."""
     settings = get_settings()
     environment = settings.environment

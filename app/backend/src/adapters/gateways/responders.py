@@ -30,7 +30,7 @@ class TemplateResponder(ResponderPort):
     rápidas e consistentes, sem dependência externa.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.templates = self._initialize_templates()
 
     def _initialize_templates(self) -> List[ResponseTemplate]:
@@ -191,20 +191,20 @@ class TemplateResponder(ResponderPort):
 
         if not compatible_templates:
             # Fallback para template genérico
-            return self.templates[0]
+            return self.templates[0]  # type: ignore[return-value]
 
         # Para produtivos, evita templates com variáveis obrigatórias complexas
         if classification.label == EmailLabel.PRODUCTIVE:
             # Prioriza templates simples sem variáveis obrigatórias
             simple_templates = [t for t in compatible_templates if not t.variables]
             if simple_templates:
-                return simple_templates[0]
+                return simple_templates[0]  # type: ignore[return-value]
 
             # Se não houver templates simples, usa o primeiro compatível
-            return compatible_templates[0]
+            return compatible_templates[0]  # type: ignore[return-value]
 
         # Retorna o primeiro compatível
-        return compatible_templates[0]
+        return compatible_templates[0]  # type: ignore[return-value]
 
     def _prepare_template_variables(
         self,
@@ -413,7 +413,8 @@ class OpenAIResponder(ResponderPort):
                 temperature=0.7,
             )
 
-            return response.choices[0].message.content
+            content = response.choices[0].message.content
+            return content or "Resposta não disponível"
 
         except Exception as e:
             raise Exception(f"Erro na API OpenAI: {str(e)}")
@@ -496,7 +497,7 @@ class HuggingFaceResponder(ResponderPort):
         self.generator = None
         self._initialize_generator()
 
-    def _initialize_generator(self):
+    def _initialize_generator(self) -> None:
         """Inicializa o gerador Hugging Face."""
         try:
             self.generator = pipeline(

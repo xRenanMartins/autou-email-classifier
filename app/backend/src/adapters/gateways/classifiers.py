@@ -26,7 +26,7 @@ class HeuristicClassifier(ClassifierPort):
     serviços externos.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.classification_service = EmailClassificationService()
 
     async def classify(
@@ -55,7 +55,7 @@ class HeuristicClassifier(ClassifierPort):
         processing_time = (time.time() - start_time) * 1000
         classification.processing_time_ms = processing_time
 
-        return classification
+        return classification  # type: ignore[return-value]
 
     async def get_supported_labels(self) -> List[str]:
         """Retorna labels suportados."""
@@ -187,7 +187,8 @@ class OpenAIClassifier(ClassifierPort):
                 temperature=0.1,
             )
 
-            return response.choices[0].message.content
+            content = response.choices[0].message.content
+            return content or "Classificação não disponível"
 
         except Exception as e:
             raise Exception(f"Erro na API OpenAI: {str(e)}")
@@ -258,7 +259,7 @@ class HuggingFaceClassifier(ClassifierPort):
         self.classifier = None
         self._initialize_classifier()
 
-    def _initialize_classifier(self):
+    def _initialize_classifier(self) -> None:
         """Inicializa o classificador Hugging Face."""
         try:
             self.classifier = pipeline(
@@ -383,17 +384,17 @@ class HybridClassifier(ClassifierPort):
 
         # Se a confiança for alta, usa o resultado heurístico
         if heuristic_result.confidence >= self.confidence_threshold:
-            heuristic_result.reasoning += " (heurístico - alta confiança)"
+            heuristic_result.reasoning = (heuristic_result.reasoning or "") + " (heurístico - alta confiança)"
             return heuristic_result
 
         # Caso contrário, usa IA para melhor precisão
         try:
             ai_result = await self.ai_classifier.classify(preprocessed_email, context)
-            ai_result.reasoning += " (IA - baixa confiança heurística)"
+            ai_result.reasoning = (ai_result.reasoning or "") + " (IA - baixa confiança heurística)"
             return ai_result
         except Exception:
             # Se IA falhar, usa heurístico
-            heuristic_result.reasoning += " (heurístico - falha na IA)"
+            heuristic_result.reasoning = (heuristic_result.reasoning or "") + " (heurístico - falha na IA)"
             return heuristic_result
 
     async def get_supported_labels(self) -> List[str]:

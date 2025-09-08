@@ -40,11 +40,11 @@ class EmailClassificationController:
     - Retorna responses padronizados
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.router = APIRouter()
         self._setup_routes()
 
-    def _setup_routes(self):
+    def _setup_routes(self) -> None:
         """Configura as rotas do controller."""
         self.router.add_api_route(
             "/process",

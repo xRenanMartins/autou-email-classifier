@@ -9,7 +9,7 @@ Suporta diferentes formatos:
 """
 
 import re
-from typing import Optional
+from typing import Optional, Any
 from datetime import datetime
 import pypdf
 from email import message_from_string
@@ -26,7 +26,7 @@ class TextEmailParser(EmailParserPort):
     assumindo formato simples de email.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.subject_pattern = re.compile(
             r"^assunto:\s*(.+)$", re.IGNORECASE | re.MULTILINE
         )
@@ -131,7 +131,7 @@ class TextEmailParser(EmailParserPort):
 
         return "\n".join(clean_lines).strip()
 
-    def _extract_email_body(self, email_message) -> str:
+    def _extract_email_body(self, email_message: Any) -> str:
         """Extrai corpo do email MIME."""
         body = ""
 
@@ -160,7 +160,7 @@ class FileEmailParser(EmailParserPort):
     o conteúdo textual para processamento.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.supported_extensions = [".pdf", ".txt", ".eml"]
 
     async def parse_text(self, text: str, subject: Optional[str] = None) -> Email:

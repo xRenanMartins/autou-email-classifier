@@ -117,7 +117,7 @@ def get_logger(name: str) -> structlog.BoundLogger:
     Returns:
         Logger configurado
     """
-    return structlog.get_logger(name)
+    return structlog.get_logger(name)  # type: ignore
 
 
 def log_request_start(

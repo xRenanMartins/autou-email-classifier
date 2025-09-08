@@ -11,7 +11,7 @@ Inclui:
 import time
 import json
 import re
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List, Pattern
 from datetime import datetime, timedelta
 from collections import defaultdict
 import structlog
@@ -28,7 +28,7 @@ class StructuredLoggingService(NotificationPort):
     observabilidade e debugging.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         # Configura structlog para logs estruturados
         structlog.configure(
             processors=[
@@ -49,7 +49,7 @@ class StructuredLoggingService(NotificationPort):
         )
 
         self.logger = structlog.get_logger()
-        self.metrics = defaultdict(int)
+        self.metrics: Dict[str, int] = defaultdict(int)
 
     async def notify_classification_completed(
         self, email: Email, classification: Classification
@@ -105,7 +105,7 @@ class StructuredLoggingService(NotificationPort):
         # Atualiza métricas locais
         for key, value in metrics.items():
             if isinstance(value, (int, float)):
-                self.metrics[key] = value
+                self.metrics[key] = int(value)
             else:
                 self.metrics[f"metric_{key}"] = 1
 
@@ -122,8 +122,8 @@ class BasicSecurityService(SecurityPort):
     sanitização e rate limiting simples.
     """
 
-    def __init__(self):
-        self.rate_limit_store = defaultdict(list)
+    def __init__(self) -> None:
+        self.rate_limit_store: Dict[str, List[float]] = defaultdict(list)
         self.rate_limits = {
             "text_processing": {
                 "max_requests": 100,
@@ -140,7 +140,7 @@ class BasicSecurityService(SecurityPort):
         }
 
         # Padrões de segurança
-        self.dangerous_patterns = [
+        dangerous_pattern_strings = [
             r"<script[^>]*>.*?</script>",  # Script tags
             r"javascript:",  # JavaScript protocol
             r"vbscript:",  # VBScript protocol
@@ -155,8 +155,8 @@ class BasicSecurityService(SecurityPort):
             r"<button[^>]*>",  # Button tags
         ]
 
-        self.dangerous_patterns = [
-            re.compile(pattern, re.IGNORECASE) for pattern in self.dangerous_patterns
+        self.dangerous_patterns: List[Pattern[str]] = [
+            re.compile(pattern, re.IGNORECASE) for pattern in dangerous_pattern_strings
         ]
 
     async def validate_input(self, content: str, content_type: str) -> bool:
@@ -290,7 +290,7 @@ class InMemoryCacheService(CachePort):
     Útil para desenvolvimento e testes.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._cache: Dict[str, Dict[str, Any]] = {}
         self._expiry_times: Dict[str, float] = {}
 
@@ -403,7 +403,7 @@ class PrometheusMetricsService(NotificationPort):
     e observabilidade em produção.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         try:
             from prometheus_client import Counter, Histogram, Gauge
 
@@ -512,7 +512,7 @@ class RedisCacheService(CachePort):
         self.redis_client = None
         self._initialize_redis()
 
-    def _initialize_redis(self):
+    def _initialize_redis(self) -> None:
         """Inicializa cliente Redis."""
         try:
             import importlib.util
@@ -526,7 +526,8 @@ class RedisCacheService(CachePort):
 
             self.redis_client = redis.from_url(self.redis_url)
             # Testa conexão
-            self.redis_client.ping()
+            if self.redis_client:
+                self.redis_client.ping()
         except Exception as e:
             print(f"Erro ao conectar Redis: {e}")
             self.redis_client = None
