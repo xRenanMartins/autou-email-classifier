@@ -243,6 +243,7 @@ async def detailed_status() -> Any:
 
         try:
             from ..core.domain.entities import EmailLabel
+
             templates = await responder.get_response_templates(EmailLabel.PRODUCTIVE)
             components_status["responder"] = {
                 "status": "healthy",

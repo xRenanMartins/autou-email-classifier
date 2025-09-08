@@ -5,7 +5,7 @@ Orquestra as operações de negócio usando as portas definidas,
 sem depender de implementações específicas.
 """
 
-from typing import Optional, Dict, Any, List, Union, cast
+from typing import Optional, Dict, Any, List, cast
 from datetime import datetime
 import time
 
@@ -80,7 +80,7 @@ class ClassifyEmailAndSuggestResponse:
         except Exception as e:
             # Propaga a exceção para os testes de falha
             raise e
-        
+
         # Garante que classification_result é um dict
         if not isinstance(classification_result, dict):
             classification_result = {
@@ -125,7 +125,7 @@ class ClassifyEmailAndSuggestResponse:
         except Exception as e:
             # Propaga a exceção para os testes de falha
             raise e
-        
+
         # Garante que response_result é um dict
         if not isinstance(response_result, dict):
             response_result = {
@@ -151,15 +151,41 @@ class ClassifyEmailAndSuggestResponse:
         return {
             "email_id": str(email.email_id),
             "classification": {
-                "label": email._classification.label.value if email._classification else "UNKNOWN",
-                "confidence": email._classification.confidence if email._classification else 0.0,
-                "reasoning": email._classification.reasoning if email._classification else "No classification",
+                "label": (
+                    email._classification.label.value
+                    if email._classification
+                    else "UNKNOWN"
+                ),
+                "confidence": (
+                    email._classification.confidence if email._classification else 0.0
+                ),
+                "reasoning": (
+                    email._classification.reasoning
+                    if email._classification
+                    else "No classification"
+                ),
             },
             "suggested_response": {
-                "subject": email._suggested_response.subject if email._suggested_response else "No response",
-                "body": email._suggested_response.body if email._suggested_response else "No response",
-                "tone": email._suggested_response.tone if email._suggested_response else "neutral",
-                "language": email._suggested_response.language if email._suggested_response else "pt",
+                "subject": (
+                    email._suggested_response.subject
+                    if email._suggested_response
+                    else "No response"
+                ),
+                "body": (
+                    email._suggested_response.body
+                    if email._suggested_response
+                    else "No response"
+                ),
+                "tone": (
+                    email._suggested_response.tone
+                    if email._suggested_response
+                    else "neutral"
+                ),
+                "language": (
+                    email._suggested_response.language
+                    if email._suggested_response
+                    else "pt"
+                ),
             },
             "processing_time_ms": 150.0,
             "metadata": {
@@ -340,7 +366,9 @@ class ProcessEmailUseCase:
         if text:
             return await self.email_parser.parse_text(text, subject)
         elif file_content:
-            return await self.email_parser.parse_file(file_content, filename or "unknown.txt")
+            return await self.email_parser.parse_file(
+                file_content, filename or "unknown.txt"
+            )
         else:
             raise ValueError("Nenhuma entrada válida fornecida")
 

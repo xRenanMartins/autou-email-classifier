@@ -1,3 +1,1 @@
 """Raiz do pacote backend."""
-
-

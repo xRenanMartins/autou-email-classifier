@@ -384,17 +384,23 @@ class HybridClassifier(ClassifierPort):
 
         # Se a confiança for alta, usa o resultado heurístico
         if heuristic_result.confidence >= self.confidence_threshold:
-            heuristic_result.reasoning = (heuristic_result.reasoning or "") + " (heurístico - alta confiança)"
+            heuristic_result.reasoning = (
+                heuristic_result.reasoning or ""
+            ) + " (heurístico - alta confiança)"
             return heuristic_result
 
         # Caso contrário, usa IA para melhor precisão
         try:
             ai_result = await self.ai_classifier.classify(preprocessed_email, context)
-            ai_result.reasoning = (ai_result.reasoning or "") + " (IA - baixa confiança heurística)"
+            ai_result.reasoning = (
+                ai_result.reasoning or ""
+            ) + " (IA - baixa confiança heurística)"
             return ai_result
         except Exception:
             # Se IA falhar, usa heurístico
-            heuristic_result.reasoning = (heuristic_result.reasoning or "") + " (heurístico - falha na IA)"
+            heuristic_result.reasoning = (
+                heuristic_result.reasoning or ""
+            ) + " (heurístico - falha na IA)"
             return heuristic_result
 
     async def get_supported_labels(self) -> List[str]:

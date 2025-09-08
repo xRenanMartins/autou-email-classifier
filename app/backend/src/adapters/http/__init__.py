@@ -1,3 +1,1 @@
 """Camada HTTP (controllers)."""
-
-
