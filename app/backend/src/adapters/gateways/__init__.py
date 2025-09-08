@@ -12,43 +12,34 @@ na camada de domínio, incluindo:
 - Serviços de cache
 """
 
-from .email_parsers import (
-    TextEmailParser, FileEmailParser, CompositeEmailParser
-)
-from .classifiers import (
-    HeuristicClassifier, OpenAIClassifier, HuggingFaceClassifier
-)
-from .responders import (
-    TemplateResponder, OpenAIResponder, HuggingFaceResponder
-)
-from .repositories import (
-    InMemoryEmailRepository, InMemoryTemplateRepository
-)
+from .email_parsers import TextEmailParser, FileEmailParser, CompositeEmailParser
+from .classifiers import HeuristicClassifier, OpenAIClassifier, HuggingFaceClassifier
+from .responders import TemplateResponder, OpenAIResponder, HuggingFaceResponder
+from .repositories import InMemoryEmailRepository, InMemoryTemplateRepository
 from .services import (
-    StructuredLoggingService, BasicSecurityService, InMemoryCacheService,
-    PrometheusMetricsService, RedisCacheService
+    StructuredLoggingService,
+    BasicSecurityService,
+    InMemoryCacheService,
+    PrometheusMetricsService,
+    RedisCacheService,
 )
 
 __all__ = [
     # Email Parsers
     "TextEmailParser",
-    "FileEmailParser", 
+    "FileEmailParser",
     "CompositeEmailParser",
-    
     # Classifiers
     "HeuristicClassifier",
     "OpenAIClassifier",
     "HuggingFaceClassifier",
-    
     # Responders
     "TemplateResponder",
     "OpenAIResponder",
     "HuggingFaceResponder",
-    
     # Repositories
     "InMemoryEmailRepository",
     "InMemoryTemplateRepository",
-    
     # Services
     "StructuredLoggingService",
     "BasicSecurityService",
@@ -56,4 +47,3 @@ __all__ = [
     "PrometheusMetricsService",
     "RedisCacheService",
 ]
-
