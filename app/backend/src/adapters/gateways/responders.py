@@ -148,7 +148,7 @@ class TemplateResponder(ResponderPort):
         # Adiciona tempo estimado de resposta
         estimated_time = self._estimate_response_time(classification)
 
-        processing_time = (time.time() - start_time) * 1000
+        (time.time() - start_time) * 1000
 
         return SuggestedResponse(
             subject=subject,
@@ -308,7 +308,7 @@ class OpenAIResponder(ResponderPort):
             )
 
             # Adiciona tempo de processamento
-            processing_time = (time.time() - start_time) * 1000
+            (time.time() - start_time) * 1000
 
             return suggested_response
 

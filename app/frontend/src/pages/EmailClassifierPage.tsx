@@ -20,29 +20,29 @@ type FormSchema = z.infer<typeof formSchema>
 
 export function EmailClassifierPage() {
   const [fileState, setFileState] = useState<{
-    file: File | null;
-    isUploading: boolean;
-    error?: string;
+    file: File | null
+    isUploading: boolean
+    error?: string
   }>({
     file: null,
     isUploading: false,
   })
 
   // Hooks personalizados para API
-  const { 
-    isLoading, 
-    error: processingError, 
-    result, 
-    processEmailText, 
-    processEmailFile, 
-    reset: resetProcessing 
+  const {
+    isLoading,
+    error: processingError,
+    result,
+    processEmailText,
+    processEmailFile,
+    reset: resetProcessing,
   } = useEmailProcessing()
 
-  const { 
-    isHealthy, 
-    isLoading: healthLoading, 
-    stats, 
-    refresh: refreshHealth 
+  const {
+    isHealthy,
+    isLoading: healthLoading,
+    stats,
+    refresh: refreshHealth,
   } = useApiHealth()
 
   const {
@@ -84,13 +84,12 @@ export function EmailClassifierPage() {
           subject: data.text.trim().substring(0, 100), // Usa início do texto como assunto
         })
       }
-      
+
       toast.success('Email processado com sucesso!')
-      
+
       // Reset form after successful processing
       reset()
       setFileState({ file: null, isUploading: false })
-      
     } catch (error: any) {
       const errorMessage = error.message || 'Erro ao processar email'
       toast.error(errorMessage)
@@ -104,7 +103,9 @@ export function EmailClassifierPage() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Status da API */}
         <div className="mb-6 flex items-center justify-center gap-2">
-          <div className={`w-3 h-3 rounded-full ${isHealthy ? 'bg-green-500' : 'bg-red-500'}`} />
+          <div
+            className={`w-3 h-3 rounded-full ${isHealthy ? 'bg-green-500' : 'bg-red-500'}`}
+          />
           <span className="text-sm text-gray-600">
             API: {isHealthy ? 'Online' : 'Offline'}
           </span>
@@ -118,7 +119,9 @@ export function EmailClassifierPage() {
             disabled={healthLoading}
             className="p-1 hover:bg-gray-100 rounded transition-colors"
           >
-            <RefreshCw className={`w-4 h-4 ${healthLoading ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`w-4 h-4 ${healthLoading ? 'animate-spin' : ''}`}
+            />
           </button>
         </div>
 
@@ -138,7 +141,8 @@ export function EmailClassifierPage() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-xl text-gray-600 max-w-2xl mx-auto"
           >
-            Identifique automaticamente se um email é produtivo ou improdutivo e receba respostas sugeridas inteligentes
+            Identifique automaticamente se um email é produtivo ou improdutivo e
+            receba respostas sugeridas inteligentes
           </motion.p>
         </div>
 
@@ -152,7 +156,10 @@ export function EmailClassifierPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Text Input */}
             <div>
-              <label htmlFor="text" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="text"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Conteúdo do Email
               </label>
               <textarea
@@ -299,4 +306,3 @@ export function EmailClassifierPage() {
     </div>
   )
 }
-

@@ -405,7 +405,7 @@ class PrometheusMetricsService(NotificationPort):
 
     def __init__(self):
         try:
-            from prometheus_client import Counter, Histogram, Gauge, generate_latest
+            from prometheus_client import Counter, Histogram, Gauge
 
             self.prometheus_available = True
 
@@ -515,7 +515,14 @@ class RedisCacheService(CachePort):
     def _initialize_redis(self):
         """Inicializa cliente Redis."""
         try:
-            import redis
+            import importlib.util
+
+            if importlib.util.find_spec("redis") is None:
+                print("Pacote 'redis' não encontrado. Cache Redis desabilitado.")
+                self.redis_client = None
+                return
+
+            import redis  # type: ignore
 
             self.redis_client = redis.from_url(self.redis_url)
             # Testa conexão

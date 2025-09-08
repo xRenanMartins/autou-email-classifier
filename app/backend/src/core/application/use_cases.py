@@ -225,7 +225,7 @@ class ProcessEmailUseCase:
             email.set_suggested_response(response)
 
             # 6. Persistência
-            saved_email = await self.email_repository.save(email)
+            await self.email_repository.save(email)
 
             # 7. Notificações
             await self._send_notifications(email, classification, response)

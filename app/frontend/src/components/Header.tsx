@@ -18,7 +18,7 @@ export function Header() {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             <div className="hidden md:flex items-center space-x-2 text-sm text-gray-600">
               <Zap className="w-4 h-4" />
@@ -34,4 +34,3 @@ export function Header() {
     </header>
   )
 }
-

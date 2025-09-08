@@ -22,9 +22,11 @@ describe('FileUpload', () => {
 
   it('renders upload area when no file is selected', () => {
     render(<FileUpload {...defaultProps} />)
-    
+
     expect(screen.getByText('Clique ou arraste um arquivo')).toBeInTheDocument()
-    expect(screen.getByText('Suporta arquivos .txt, .pdf e .eml (máx. 10MB)')).toBeInTheDocument()
+    expect(
+      screen.getByText('Suporta arquivos .txt, .pdf e .eml (máx. 10MB)')
+    ).toBeInTheDocument()
   })
 
   it('renders file info when file is selected', () => {
@@ -35,7 +37,7 @@ describe('FileUpload', () => {
     }
 
     render(<FileUpload {...props} />)
-    
+
     expect(screen.getByText('test.txt')).toBeInTheDocument()
     expect(screen.getByText('📝')).toBeInTheDocument()
   })
@@ -47,7 +49,7 @@ describe('FileUpload', () => {
     }
 
     render(<FileUpload {...props} />)
-    
+
     expect(screen.getByText('Arquivo muito grande')).toBeInTheDocument()
     // Verifica se o ícone de alerta está presente usando o SVG
     expect(screen.getByTestId('alert-icon')).toBeInTheDocument()
@@ -61,10 +63,10 @@ describe('FileUpload', () => {
     }
 
     render(<FileUpload {...props} />)
-    
+
     const removeButton = screen.getByLabelText('Remover arquivo')
     fireEvent.click(removeButton)
-    
+
     expect(mockOnFileChange).toHaveBeenCalledWith(null)
   })
 
@@ -88,14 +90,16 @@ describe('FileUpload', () => {
   })
 
   it('formats file size correctly', () => {
-    const file = new File(['x'.repeat(1024)], 'test.txt', { type: 'text/plain' })
+    const file = new File(['x'.repeat(1024)], 'test.txt', {
+      type: 'text/plain',
+    })
     const props = {
       ...defaultProps,
       state: { ...defaultProps.state, file },
     }
 
     render(<FileUpload {...props} />)
-    
+
     expect(screen.getByText('1 KB')).toBeInTheDocument()
   })
 })

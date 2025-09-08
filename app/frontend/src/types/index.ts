@@ -68,4 +68,3 @@ export interface FormData {
   file: File | null
   metadata: EmailMetadata
 }
-

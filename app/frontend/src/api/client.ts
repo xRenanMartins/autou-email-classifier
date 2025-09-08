@@ -1,17 +1,17 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
-import { 
-  EmailProcessingRequest, 
-  EmailProcessingResponse, 
+import {
+  EmailProcessingRequest,
+  EmailProcessingResponse,
   ProcessingStats,
-  ApiError 
+  ApiError,
 } from '../types'
 
 class ApiClient {
   private client: AxiosInstance
 
   constructor() {
-    const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-    
+    const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
     this.client = axios.create({
       baseURL: `${baseURL}/api/v1`,
       timeout: 30000,
@@ -22,18 +22,18 @@ class ApiClient {
 
     // Request interceptor
     this.client.interceptors.request.use(
-      (config) => {
+      config => {
         // Add request ID for tracking
         config.headers['X-Request-ID'] = this.generateRequestId()
         return config
       },
-      (error) => Promise.reject(error)
+      error => Promise.reject(error)
     )
 
     // Response interceptor
     this.client.interceptors.response.use(
       (response: AxiosResponse) => response,
-      (error) => {
+      error => {
         if (error.response) {
           // Server responded with error status
           const apiError: ApiError = {
@@ -67,32 +67,42 @@ class ApiClient {
     return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   }
 
-  async processEmail(request: EmailProcessingRequest): Promise<EmailProcessingResponse> {
+  async processEmail(
+    request: EmailProcessingRequest
+  ): Promise<EmailProcessingResponse> {
     const formData = new FormData()
-    
+
     if (request.text) {
       formData.append('text', request.text)
     }
-    
+
     if (request.file) {
       formData.append('file', request.file)
     }
-    
+
     if (request.metadata) {
       formData.append('metadata', JSON.stringify(request.metadata))
     }
 
-    const response = await this.client.post<EmailProcessingResponse>('/process', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
+    const response = await this.client.post<EmailProcessingResponse>(
+      '/process',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
 
     return response.data
   }
 
-  async getEmailClassification(emailId: string): Promise<EmailProcessingResponse> {
-    const response = await this.client.get<EmailProcessingResponse>(`/emails/${emailId}`)
+  async getEmailClassification(
+    emailId: string
+  ): Promise<EmailProcessingResponse> {
+    const response = await this.client.get<EmailProcessingResponse>(
+      `/emails/${emailId}`
+    )
     return response.data
   }
 
@@ -113,4 +123,3 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient()
-

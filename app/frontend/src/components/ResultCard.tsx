@@ -21,15 +21,17 @@ export function ResultCard({ result }: ResultCardProps) {
   }
 
   const getLabelColor = (label: string) => {
-    return label === 'PRODUCTIVE' 
-      ? 'bg-success-100 text-success-800 border-success-200' 
+    return label === 'PRODUCTIVE'
+      ? 'bg-success-100 text-success-800 border-success-200'
       : 'bg-warning-100 text-warning-800 border-warning-200'
   }
 
   const getLabelIcon = (label: string) => {
-    return label === 'PRODUCTIVE' 
-      ? <CheckCircle className="w-5 h-5" />
-      : <XCircle className="w-5 h-5" />
+    return label === 'PRODUCTIVE' ? (
+      <CheckCircle className="w-5 h-5" />
+    ) : (
+      <XCircle className="w-5 h-5" />
+    )
   }
 
   const getConfidenceColor = (confidence: number) => {
@@ -51,18 +53,26 @@ export function ResultCard({ result }: ResultCardProps) {
           <h3 className="text-lg font-semibold text-gray-900">
             Resultado da Classificação
           </h3>
-          <div className={`flex items-center space-x-2 px-3 py-1 rounded-full border ${getLabelColor(result.classification.label)}`}>
+          <div
+            className={`flex items-center space-x-2 px-3 py-1 rounded-full border ${getLabelColor(result.classification.label)}`}
+          >
             {getLabelIcon(result.classification.label)}
             <span className="font-medium">
-              {result.classification.label === 'PRODUCTIVE' ? 'Produtivo' : 'Improdutivo'}
+              {result.classification.label === 'PRODUCTIVE'
+                ? 'Produtivo'
+                : 'Improdutivo'}
             </span>
           </div>
         </div>
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-600">Confiança:</span>
-            <span className={`font-semibold ${getConfidenceColor(result.classification.confidence)}`}>
+            <span className="text-sm font-medium text-gray-600">
+              Confiança:
+            </span>
+            <span
+              className={`font-semibold ${getConfidenceColor(result.classification.confidence)}`}
+            >
               {Math.round(result.classification.confidence * 100)}%
             </span>
           </div>
@@ -79,7 +89,8 @@ export function ResultCard({ result }: ResultCardProps) {
           )}
 
           <div className="text-xs text-gray-500">
-            Processado em: {new Date().toLocaleString('pt-BR')} • Tempo: {result.processing_time_ms}ms
+            Processado em: {new Date().toLocaleString('pt-BR')} • Tempo:{' '}
+            {result.processing_time_ms}ms
           </div>
         </div>
       </div>
@@ -135,4 +146,3 @@ export function ResultCard({ result }: ResultCardProps) {
     </motion.div>
   )
 }
-

@@ -19,24 +19,29 @@ const ACCEPTED_TYPES = {
 export function FileUpload({ state, onFileChange, onError }: FileUploadProps) {
   const [dragActive, setDragActive] = useState(false)
 
-  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
-    if (rejectedFiles.length > 0) {
-      const rejection = rejectedFiles[0]
-      if (rejection.errors.some((e: any) => e.code === 'file-too-large')) {
-        onError('Arquivo muito grande. Tamanho máximo: 10MB')
-      } else if (rejection.errors.some((e: any) => e.code === 'file-invalid-type')) {
-        onError('Tipo de arquivo não suportado. Use .txt, .pdf ou .eml')
-      } else {
-        onError('Erro ao processar arquivo')
+  const onDrop = useCallback(
+    (acceptedFiles: File[], rejectedFiles: any[]) => {
+      if (rejectedFiles.length > 0) {
+        const rejection = rejectedFiles[0]
+        if (rejection.errors.some((e: any) => e.code === 'file-too-large')) {
+          onError('Arquivo muito grande. Tamanho máximo: 10MB')
+        } else if (
+          rejection.errors.some((e: any) => e.code === 'file-invalid-type')
+        ) {
+          onError('Tipo de arquivo não suportado. Use .txt, .pdf ou .eml')
+        } else {
+          onError('Erro ao processar arquivo')
+        }
+        return
       }
-      return
-    }
 
-    if (acceptedFiles.length > 0) {
-      const file = acceptedFiles[0]
-      onFileChange(file)
-    }
-  }, [onFileChange, onError])
+      if (acceptedFiles.length > 0) {
+        const file = acceptedFiles[0]
+        onFileChange(file)
+      }
+    },
+    [onFileChange, onError]
+  )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -85,7 +90,9 @@ export function FileUpload({ state, onFileChange, onError }: FileUploadProps) {
           <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
           <div className="space-y-2">
             <p className="text-lg font-medium text-gray-900">
-              {isDragActive ? 'Solte o arquivo aqui' : 'Clique ou arraste um arquivo'}
+              {isDragActive
+                ? 'Solte o arquivo aqui'
+                : 'Clique ou arraste um arquivo'}
             </p>
             <p className="text-sm text-gray-500">
               Suporta arquivos .txt, .pdf e .eml (máx. 10MB)
